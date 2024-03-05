@@ -22,6 +22,7 @@ class NextPNRWrapper():
         out_format    = "",
         constr_format = "",
         pnr_opts      = "",
+        is_himbaechel = False,
         **kwargs)     :
         """
         Parameters
@@ -45,7 +46,11 @@ class NextPNRWrapper():
         kwargs: dict
             alternate options key/value
         """
-        self.name           = f"nextpnr-{family}"
+        self._is_himbaechel = is_himbaechel
+        if is_himbaechel:
+            self.name           = f"nextpnr-himbaechel"
+        else:
+            self.name           = f"nextpnr-{family}"
         self._target        = family
         self._build_name    = build_name
         self._in_format     = in_format
@@ -83,9 +88,11 @@ class NextPNRWrapper():
         =======
         str containing instruction and/or rule
         """
-        cmd = "{pnr_name} --{in_fmt} {build_name}.{in_fmt} --{constr_fmt}" + \
-            " {build_name}.{constr_fmt}" + \
-            " --{out_fmt} {build_name}.{out_ext} {pnr_opts}"
+        cmd = "{pnr_name} --{in_fmt} {build_name}.{in_fmt}"
+        if not self._is_himbaechel:
+            cmd += " --{constr_fmt} {build_name}.{constr_fmt}"+ \
+                   " --{out_fmt} {build_name}.{out_ext}"
+        cmd += " {pnr_opts}"
         base_cmd = cmd.format(
             pnr_name   = self.name,
             build_name = self._build_name,

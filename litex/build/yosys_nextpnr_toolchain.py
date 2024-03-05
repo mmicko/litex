@@ -85,6 +85,7 @@ class YosysNextPNRToolchain(GenericToolchain):
         self._architecture    = ""
         self._package         = ""
         self._speed_grade     = ""
+        self._is_himbaechel   = False
 
     def build(self, platform, fragment,
         nowidelut    = False,
@@ -93,6 +94,7 @@ class YosysNextPNRToolchain(GenericToolchain):
         timingstrict = False,
         ignoreloops  = False,
         seed         = 1,
+        is_himbaechel= False,
         **kwargs):
         """
         Parameters
@@ -123,6 +125,7 @@ class YosysNextPNRToolchain(GenericToolchain):
         self.ignoreloops  = ignoreloops
         self.seed         = seed
         self._quiet       = kwargs.pop("quiet", False)
+        self._is_himbaechel = is_himbaechel
 
         return GenericToolchain.build(self, platform, fragment, **kwargs)
 
@@ -156,7 +159,8 @@ class YosysNextPNRToolchain(GenericToolchain):
             pnr_opts          = self._pnr_opts,
             timing_allow_fail = not self.timingstrict,
             ignore_loops      = self.ignoreloops,
-            seed              = self.seed
+            seed              = self.seed,
+            is_himbaechel     = self._is_himbaechel
         )
 
     @property
